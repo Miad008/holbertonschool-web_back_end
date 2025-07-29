@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""Module that contains the wait_random coroutine that waits for a random delay."""
+
+
 import asyncio
 import random
 
