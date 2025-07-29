@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Module for calculating element lengths in an iterable."""
+"""Module for creating a multiplier function."""
 
 
-from typing import Iterable, Sequence, List, Tuple
+from typing import Callable
 
 
-def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
-    """Returns a list of tuples with elements and their lengths."""
-    return [(i, len(i)) for i in lst]
+def make_multiplier(multiplier: float) -> Callable[[float], float]:
+    """Returns a function that multiplies a float by the multiplier."""
+    def multiplier_function(n: float) -> float:
+        return n * multiplier
+    return multiplier_function
