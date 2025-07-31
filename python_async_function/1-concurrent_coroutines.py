@@ -15,6 +15,6 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
 
     for task in tasks:
         delay = await task
-        bisect.insort(delays, delay)  # Insert while keeping list sorted
+        bisect.insort(delays, delay) 
 
     return delays
