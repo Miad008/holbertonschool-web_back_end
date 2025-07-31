@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-"""Module for executing wait_random coroutines concurrently."""
+"""Run multiple coroutines and return sorted list of delays"""
 
 
 import asyncio
+import bisect
 from typing import List
-from 0_basic_async_syntax import wait_random
+wait_random = __import__('0-basic_async_syntax').wait_random
 
 
 async def wait_n(n: int, max_delay: int) -> List[float]:
-    """Return sorted delays from multiple wait_random coroutines."""
-    tasks = [wait_random(max_delay) for _ in range(n)]
-    delays = await asyncio.gather(*tasks)
-    return sorted(delays)
+    """Spawn wait_random n times and return delays in ascending order"""
+    tasks = [asyncio.create_task(wait_random(max_delay)) for _ in range(n)]
+    delays: List[float] = []
+
+    for task in tasks:
+        delay = await task
+        bisect.insort(delays, delay)  # Insert while keeping list sorted
+
+    return delays
