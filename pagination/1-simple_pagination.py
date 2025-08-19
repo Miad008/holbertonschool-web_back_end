@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Simple pagination module
-"""
+"""Simple pagination module"""
 
 
 import csv
@@ -24,7 +22,7 @@ class Server:
     def __init__(self):
         self.__dataset = None
 
-    def dataset(self) -> List[List]:
+    def dataset(self) -> List[List[str]]:
         """Cached dataset"""
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
@@ -33,7 +31,7 @@ class Server:
             self.__dataset = dataset[1:]  # skip header
         return self.__dataset
 
-    def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+    def get_page(self, page: int = 1, page_size: int = 10) -> List[List[str]]:
         """
         Return the appropriate page of the dataset.
         """
