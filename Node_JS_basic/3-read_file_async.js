@@ -1,42 +1,32 @@
 const fs = require('fs');
 
-function countStudents(path) {
+module.exports = function countStudents(path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, { encoding: 'utf-8' }, (err, data) => {
-      if (err) {
-        reject(new Error('Cannot load the database'));
-        return;
-      }
-
-      const lines = data.split('\n').filter((line) => line.trim() !== '');
-      const header = lines[0].split(',');
+      if (err) return reject(Error('Cannot load the database'));
+      const lines = data.split('\n').slice(1, -1);
+      const header = data.split('\n').slice(0, 1)[0].split(',');
       const idxFn = header.findIndex((ele) => ele === 'firstname');
       const idxFd = header.findIndex((ele) => ele === 'field');
       const fields = {};
       const students = {};
 
-      for (let i = 1; i < lines.length; i++) {
-        const list = lines[i].split(',');
-        const field = list[idxFd];
-        const firstname = list[idxFn];
+      lines.forEach((line) => {
+        const list = line.split(',');
+        if (!fields[list[idxFd]]) fields[list[idxFd]] = 0;
+        fields[list[idxFd]] += 1;
+        if (!students[list[idxFd]]) students[list[idxFd]] = '';
+        students[list[idxFd]] += students[list[idxFd]] ? `, ${list[idxFn]}` : list[idxFn];
+      });
 
-        if (!fields[field]) fields[field] = 0;
-        fields[field] += 1;
-
-        if (!students[field]) students[field] = '';
-        students[field] += students[field] ? `, ${firstname}` : firstname;
-      }
-
-      console.log(`Number of students: ${lines.length - 1}`);
-      for (const field in fields) {
-        if (Object.hasOwnProperty.call(fields, field)) {
-          console.log(`Number of students in ${field}: ${fields[field]}. List: ${students[field]}`);
+      console.log(`Number of students: ${lines.length}`);
+      for (const key in fields) {
+        if (Object.hasOwnProperty.call(fields, key)) {
+          const element = fields[key];
+          console.log(`Number of students in ${key}: ${element}. List: ${students[key]}`);
         }
       }
-
-      resolve();
+      return resolve();
     });
   });
-}
-
-module.exports = countStudents;
+};
